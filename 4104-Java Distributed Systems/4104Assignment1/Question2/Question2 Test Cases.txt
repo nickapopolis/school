@@ -1,0 +1,267 @@
+
+-------------------------------------------
+Question 2
+-not all messages created reach their targets since there isnt always a connection
+-------------------------------------------
+input file:
+4	
+1 4 
+2 3
+
+java Question2 -c input.txt -t 60 -s 3
+
+output:
+message number 1 source: 1 destination: 4
+message number 4 source: 2 destination: 3
+message number 3 source: 3 destination: 2
+message number 5 source: 3 destination: 2
+message number 6 source: 2 destination: 3
+message number 10 source: 3 destination: 2
+message number 8 source: 2 destination: 3
+message number 9 source: 2 destination: 3
+message number 11 source: 4 destination: 1
+message number 14 source: 2 destination: 3
+message number 15 source: 3 destination: 2
+message number 17 source: 3 destination: 2
+message number 18 source: 2 destination: 3
+message number 20 source: 2 destination: 3
+message number 25 source: 2 destination: 3
+message number 29 source: 4 destination: 1
+message number 37 source: 3 destination: 2
+message number 36 source: 2 destination: 3
+message number 40 source: 2 destination: 3
+message number 49 source: 2 destination: 3
+message number 52 source: 2 destination: 3
+message number 56 source: 2 destination: 3
+message number 55 source: 4 destination: 1
+message number 58 source: 2 destination: 3
+message number 59 source: 4 destination: 1
+message number 61 source: 2 destination: 3
+message number 60 source: 3 destination: 2
+message number 63 source: 3 destination: 2
+message number 65 source: 4 destination: 1
+message number 67 source: 3 destination: 2
+message number 76 source: 2 destination: 3
+message number 89 source: 4 destination: 1
+message number 93 source: 3 destination: 2
+message number 96 source: 3 destination: 2
+message number 97 source: 2 destination: 3
+message number 98 source: 3 destination: 2
+message number 100 source: 3 destination: 2
+message number 103 source: 3 destination: 2
+message number 106 source: 1 destination: 4
+message number 109 source: 2 destination: 3
+message number 119 source: 3 destination: 2
+message number 121 source: 4 destination: 1
+message number 123 source: 2 destination: 3
+message number 130 source: 4 destination: 1
+message number 128 source: 2 destination: 3
+message number 133 source: 2 destination: 3
+message number 134 source: 2 destination: 3
+message number 139 source: 1 destination: 4
+message number 141 source: 1 destination: 4
+message number 152 source: 1 destination: 4
+message number 154 source: 2 destination: 3
+message number 155 source: 2 destination: 3
+message number 157 source: 2 destination: 3
+message number 158 source: 2 destination: 3
+message number 161 source: 2 destination: 3
+message number 162 source: 3 destination: 2
+message number 164 source: 2 destination: 3
+message number 167 source: 2 destination: 3
+message number 172 source: 4 destination: 1
+message number 175 source: 1 destination: 4
+message number 177 source: 2 destination: 3
+message number 181 source: 1 destination: 4
+message number 182 source: 1 destination: 4
+message number 183 source: 4 destination: 1
+message number 186 source: 2 destination: 3
+message number 189 source: 2 destination: 3
+message number 190 source: 2 destination: 3
+message number 193 source: 4 destination: 1
+message number 196 source: 2 destination: 3
+message number 198 source: 2 destination: 3
+message number 199 source: 2 destination: 3
+message number 201 source: 4 destination: 1
+message number 203 source: 2 destination: 3
+message number 202 source: 4 destination: 1
+message number 218 source: 2 destination: 3
+message number 219 source: 2 destination: 3
+message number 220 source: 2 destination: 3
+message number 224 source: 2 destination: 3
+message number 229 source: 2 destination: 3
+message number 230 source: 2 destination: 3
+message number 235 source: 2 destination: 3
+message number 237 source: 2 destination: 3
+message number 238 source: 2 destination: 3
+message number 242 source: 4 destination: 1
+message number 247 source: 2 destination: 3
+
+input file:
+4
+1 2
+
+java Question2 -c input.txt -t 20 -s 10
+
+output:
+message number 1 source: 2 destination: 1
+message number 4 source: 2 destination: 1
+message number 7 source: 1 destination: 2
+message number 8 source: 1 destination: 2
+message number 11 source: 2 destination: 1
+message number 13 source: 2 destination: 1
+message number 23 source: 2 destination: 1
+message number 27 source: 2 destination: 1
+message number 30 source: 2 destination: 1
+message number 31 source: 2 destination: 1
+message number 33 source: 1 destination: 2
+message number 38 source: 1 destination: 2
+message number 41 source: 2 destination: 1
+message number 45 source: 1 destination: 2
+message number 48 source: 2 destination: 1
+message number 49 source: 2 destination: 1
+message number 50 source: 2 destination: 1
+
+
+input file:
+6
+1 2
+2 3
+3 4
+4 5
+5 6
+
+java Question2 -c input.txt -t 40 -s 100
+
+output:
+message number 4 source: 5 destination: 6
+message number 7 source: 5 destination: 6
+message number 8 source: 6 destination: 5
+message number 15 source: 4 destination: 3
+message number 0 source: 3 destination: 4
+message number 19 source: 2 destination: 1
+message number 20 source: 2 destination: 1
+message number 22 source: 3 destination: 2
+message number 29 source: 3 destination: 2
+message number 78 source: 1 destination: 2
+message number 90 source: 1 destination: 2
+message number 33 source: 6 destination: 5
+message number 46 source: 6 destination: 5
+message number 52 source: 6 destination: 5
+message number 54 source: 6 destination: 5
+message number 60 source: 6 destination: 5
+message number 62 source: 6 destination: 5
+message number 97 source: 1 destination: 2
+message number 75 source: 6 destination: 5
+message number 118 source: 1 destination: 2
+message number 67 source: 4 destination: 3
+message number 89 source: 4 destination: 3
+message number 107 source: 4 destination: 3
+message number 122 source: 2 destination: 3
+message number 124 source: 2 destination: 3
+message number 128 source: 1 destination: 2
+message number 162 source: 5 destination: 6
+message number 193 source: 3 destination: 4
+message number 195 source: 4 destination: 5
+message number 209 source: 1 destination: 2
+message number 221 source: 1 destination: 2
+message number 237 source: 5 destination: 6
+message number 245 source: 3 destination: 4
+message number 246 source: 1 destination: 2
+message number 232 source: 4 destination: 3
+message number 241 source: 4 destination: 3
+message number 262 source: 1 destination: 2
+message number 103 source: 6 destination: 5
+message number 276 source: 5 destination: 6
+message number 280 source: 1 destination: 2
+message number 138 source: 6 destination: 5
+message number 148 source: 6 destination: 5
+message number 154 source: 6 destination: 5
+message number 158 source: 6 destination: 5
+message number 306 source: 1 destination: 2
+message number 173 source: 6 destination: 5
+message number 175 source: 6 destination: 5
+message number 179 source: 6 destination: 5
+message number 182 source: 6 destination: 5
+message number 183 source: 6 destination: 5
+message number 190 source: 6 destination: 5
+message number 316 source: 1 destination: 2
+message number 123 source: 3 destination: 2
+message number 201 source: 6 destination: 5
+
+input file:
+10
+1 2
+3 4
+5 6
+7 8
+1 4
+
+java Question2 -c input.txt -t 60 -s 3
+
+output:
+message number 8 source: 1 destination: 2
+message number 13 source: 1 destination: 4
+message number 27 source: 5 destination: 6
+message number 26 source: 1 destination: 4
+message number 48 source: 3 destination: 4
+message number 59 source: 7 destination: 8
+message number 71 source: 6 destination: 5
+message number 80 source: 1 destination: 4
+message number 103 source: 8 destination: 7
+message number 82 source: 3 destination: 4
+message number 172 source: 6 destination: 5
+message number 199 source: 2 destination: 1
+message number 208 source: 2 destination: 1
+message number 212 source: 6 destination: 5
+message number 221 source: 3 destination: 4
+message number 241 source: 3 destination: 4
+message number 239 source: 2 destination: 1
+message number 245 source: 2 destination: 1
+message number 257 source: 5 destination: 6
+message number 266 source: 2 destination: 1
+message number 277 source: 3 destination: 4
+message number 276 source: 2 destination: 1
+message number 283 source: 6 destination: 5
+message number 302 source: 6 destination: 5
+message number 305 source: 1 destination: 2
+message number 335 source: 6 destination: 5
+message number 380 source: 8 destination: 7
+message number 390 source: 1 destination: 2
+message number 394 source: 6 destination: 5
+message number 411 source: 6 destination: 5
+message number 391 source: 2 destination: 1
+message number 399 source: 2 destination: 1
+message number 437 source: 4 destination: 3
+message number 468 source: 2 destination: 1
+message number 496 source: 5 destination: 6
+message number 503 source: 1 destination: 2
+message number 512 source: 5 destination: 6
+message number 513 source: 5 destination: 6
+message number 556 source: 2 destination: 1
+message number 574 source: 2 destination: 1
+message number 577 source: 2 destination: 1
+message number 576 source: 3 destination: 4
+message number 598 source: 7 destination: 8
+message number 624 source: 7 destination: 8
+message number 638 source: 7 destination: 8
+message number 645 source: 4 destination: 3
+message number 671 source: 3 destination: 4
+message number 690 source: 5 destination: 6
+message number 682 source: 8 destination: 7
+message number 698 source: 5 destination: 6
+message number 707 source: 5 destination: 6
+message number 722 source: 4 destination: 3
+message number 723 source: 3 destination: 4
+message number 728 source: 1 destination: 2
+message number 754 source: 7 destination: 8
+message number 757 source: 6 destination: 5
+message number 756 source: 5 destination: 6
+message number 783 source: 6 destination: 5
+message number 818 source: 8 destination: 7
+message number 835 source: 5 destination: 6
+message number 829 source: 6 destination: 5
+message number 867 source: 8 destination: 7
+message number 902 source: 8 destination: 7
+message number 905 source: 8 destination: 7
+message number 919 source: 8 destination: 7

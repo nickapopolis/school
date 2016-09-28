@@ -1,0 +1,33 @@
+
+
+-------------------------------------------
+Question 1
+-Each test case will be run 3 times
+-------------------------------------------
+
+java Question1 -i "A[BC]D"
+ACBD
+ABCD
+ABCD
+
+java Question1 -i "AB{CDE}FGH"
+ABCFGH
+ABCFGH
+ABEFGH
+
+java Question1 -i "A[B{CD}E]F"
+ABCEF
+AEBCF
+ABCEF
+
+java Question1 -i "{A[BCDE]F}"
+D
+B
+F
+
+java Question1 -i "[He]llo Wor{ld}"
+eHllo Word
+eHllo Worl
+eHllo Word
+
+

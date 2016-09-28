@@ -1,0 +1,2269 @@
+#################################################
+# Documentation and Testing File for Question 4 #
+#################################################
+
+Documentation:
+--------------
+
+The code consists of the following files/classes:
+- Question4.java
+- BuildManager.java
+- ConstraintStringParser.java
+- ConstraintsException.java
+- PartSpec.java
+- Part.java
+
+Question4 contains the main method and it simply reads the command line
+arguments and then builds a new BuildManager to do the work. If the arguments
+are invalid, it prints a message and exit
+
+BuildManager is the "manager" for building the parts. It has a function for 
+"parsing" a file specified in the command line argument. The function opens
+the constraints file and creates "PartSpecs" that define the "Specification" of
+a part (such as what parts it depends on, and what should come before the
+other). It also has a function that allows another class to request a part to 
+be built
+
+ConstraintStringParser is a class that wraps around a line from the constraints
+file. Useful methods are in the class to obtain the NAME, CONSTRAINT, and
+NAME_LIST part from every line of the file. It throws a ConstraintsException if
+something in the line did not make sense.
+
+PartSpec defines a "specification" for a component. It holds the name of a part,
+and a list of other Parts that it depends on. Originally it was going to be a 
+much more complex system but it got simplified, so there are some functions
+that aren't really used.
+
+Part is an "instance" of a part spec. It has a "built" state which indicates
+whether it is built or not. There is also a function that initiates its build
+process, which starts a new thread.
+
+The basic flow of the program is like this:
+- The main thread (Question4) reads command line arguments and makes a new 
+  instance of BuildManager
+- The main thread asks BuildManager to read a file and define PartSpecs
+	- BuildManager goes through the file and uses ConstraintStringParser
+	  to parse the individual lines of the file
+	- BuildManager makes PartSpecs and stores them in an internal Set
+- The main thread asks BuildManager to build some parts (as specified in the
+  command line arguments)
+	- BuildManager gets the relevant PartSpecs and instantiates a list of
+	  requested Parts
+	- BuildManager calls the Parts' "build" method. This method is 
+	  non-blocking and returns immediately, as it starts a new thread
+		- In the Part's build method, a new thread is made. This goes through
+		  the part's "child parts" as defined in its PartSpec, and then 
+		  instantiates them. 
+		- The part then calls the build method of each of its children parts.
+		  This essentially makes the build process recursive.
+		- The part waits for its children to finish.
+		- The part then waits for a random amount of time to "simulate" building
+		- The part has finished "building" and sets its build state to true
+	- BuildManager waits for the parts to finish building
+- The main thread prints the "DONE!" message.
+
+
+Testing:
+========
+
+Test 1: Example given in the assignment page:
+----------------------------------------------
+Build parts: A B
+Constraints File:
+	A has-parts B C D
+	D has-parts E F
+	D before C
+	D before B 
+		
+Output:
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>java Question4 -c C:\c.txt -b A B
+reading file and parsing
+Building part: A
+Building part: B
+Building A
+Building B
+Building B
+Building C
+Building D
+Building E
+Building F
+Done building E
+Done building F
+Done building B
+Done building B
+Done building C
+Done building D
+Done building A
+DONE!
+
+Result:
+Program works normally, but it seems to ignore the "before" statements.
+
+
+Test 2: not enough command line parameters
+-------------------------------------------
+Output:
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>java Question4
+Usage:
+------
+java Question4 -c <constraints file> -b <Part 1> <Part 2> ... <Part n>
+        <constraints file> is the path of the filename defining the constraints
+on construction
+        <Part> is the name of the part you want to build
+
+
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>java Question4 -c
+Usage:
+------
+java Question4 -c <constraints file> -b <Part 1> <Part 2> ... <Part n>
+        <constraints file> is the path of the filename defining the constraints
+on construction
+        <Part> is the name of the part you want to build
+
+
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>java Question4 -b
+Usage:
+------
+java Question4 -c <constraints file> -b <Part 1> <Part 2> ... <Part n>
+        <constraints file> is the path of the filename defining the constraints
+on construction
+        <Part> is the name of the part you want to build
+
+
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>java Question4 -b A
+Usage:
+------
+java Question4 -c <constraints file> -b <Part 1> <Part 2> ... <Part n>
+        <constraints file> is the path of the filename defining the constraints
+on construction
+        <Part> is the name of the part you want to build
+
+
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>java Question4 -c -B
+Usage:
+------
+java Question4 -c <constraints file> -b <Part 1> <Part 2> ... <Part n>
+        <constraints file> is the path of the filename defining the constraints
+on construction
+        <Part> is the name of the part you want to build
+
+
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>java Question4 -c -b
+Usage:
+------
+java Question4 -c <constraints file> -b <Part 1> <Part 2> ... <Part n>
+        <constraints file> is the path of the filename defining the constraints
+on construction
+        <Part> is the name of the part you want to build
+
+
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>java Question4 -c C:\c.txt -b
+Usage:
+------
+java Question4 -c <constraints file> -b <Part 1> <Part 2> ... <Part n>
+        <constraints file> is the path of the filename defining the constraints
+on construction
+        <Part> is the name of the part you want to build
+
+
+C:\Users\9a3eedi\Dropbox\University\Distributed Programming\Assignments\Assignme
+nt 1\Q4\bin>
+
+Result:
+The program handles the cases properly
+
+
+
+Test 3: A high number of build requests
+----------------------------------------
+Build parts: A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+Constraints File:
+	A has-parts B C D 
+	D has-parts E F
+	E has-parts F G H I J K L M
+	G has-parts H H H H I K L
+	L has-parts N O P Q R S T U V W X Y Z
+	N has-parts X Y Z
+	S has-parts T U V W X Y Z
+	T has-parts U U
+	W has-parts V V V V V V V V V V V V
+	X has-parts Y Z Y Z Y Z Y Z
+	Y has-parts Z Z
+	D before C
+	D before B 
+
+Output:
+reading file and parsing
+Building part: A
+Building part: B
+Building A
+Building B
+Building part: C
+Building part: D
+Building part: E
+Building B
+Building part: F
+Building part: G
+Building C
+Building C
+Building part: H
+Building E
+Building part: I
+Building G
+Building D
+Building part: J
+Building D
+Building F
+Building H
+Building H
+Building H
+Building J
+Building part: K
+Building E
+Building H
+Building H
+Building part: L
+Building H
+Building F
+Building I
+Building F
+Building I
+Building L
+Building G
+Building K
+Building I
+Building K
+Building M
+Building M
+Building J
+Building E
+Building F
+Building I
+Building G
+Building H
+Building K
+Building N
+Building L
+Building H
+Building F
+Building J
+Building H
+Building H
+Building K
+Building H
+Building P
+Building L
+Building R
+Building Z
+Building X
+Building V
+Building L
+Building part: M
+Building Y
+Building T
+Building N
+Building Z
+Building O
+Building Q
+Building S
+Building U
+Building R
+Building T
+Done building J
+Building V
+Building Y
+Building Y
+Building W
+Building X
+Building U
+Building T
+Building W
+Building Y
+Building Z
+Building U
+Building P
+Building Z
+Building W
+Building X
+Building V
+Building Z
+Building Z
+Building Q
+Building Z
+Building Z
+Building S
+Building Y
+Building Z
+Building O
+Building Y
+Building O
+Building Y
+Done building H
+Building Q
+Building R
+Building Y
+Building U
+Building P
+Building Z
+Building S
+Building X
+Building N
+Building W
+Building V
+Building T
+Building Z
+Building Y
+Building Y
+Building X
+Building H
+Building H
+Building H
+Building H
+Building I
+Building K
+Building Y
+Building Y
+Building K
+Done building H
+Building Z
+Building Z
+Building I
+Building Z
+Building Z
+Building V
+Building L
+Building Z
+Building L
+Building V
+Building Y
+Building P
+Building N
+Building Y
+Building O
+Building Z
+Building Q
+Building Z
+Building U
+Building Z
+Building N
+Building O
+Building U
+Building V
+Building V
+Building V
+Building Z
+Building P
+Building Z
+Building Y
+Building Z
+Building Z
+Building Z
+Building Y
+Building Y
+Building Z
+Building X
+Building Z
+Building Z
+Building O
+Building Z
+Building Y
+Building N
+Building Z
+Building Z
+Building P
+Building Z
+Building Z
+Building Y
+Building R
+Building Q
+Building S
+Building T
+Building Z
+Building Z
+Building V
+Building W
+Building U
+Building Z
+Building Z
+Building T
+Building V
+Building Z
+Building U
+Building Z
+Building W
+Building Z
+Building Y
+Building X
+Building Y
+Building Z
+Building Y
+Building Z
+Building Z
+Building Y
+Building Z
+Building Z
+Building Y
+Building Y
+Building V
+Building Z
+Building Z
+Building Y
+Building Z
+Building Z
+Building V
+Building Z
+Building V
+Building Z
+Building V
+Building V
+Building Z
+Building U
+Building Z
+Building Z
+Building Z
+Building V
+Building V
+Building V
+Building V
+Done building Z
+Building V
+Building V
+Building Z
+Building V
+Building U
+Building V
+Building V
+Building V
+Building V
+Building V
+Building V
+Building V
+Building U
+Building part: N
+Building part: O
+Building Y
+Building U
+Building Z
+Building X
+Building U
+Building Z
+Building part: P
+Building Y
+Building Z
+Building U
+Building M
+Building N
+Building Z
+Building Y
+Building Z
+Building Z
+Building V
+Done building R
+Building V
+Building V
+Building V
+Building Z
+Building V
+Building O
+Building Z
+Building Z
+Building Z
+Building V
+Building Z
+Building Y
+Building V
+Building Z
+Building U
+Building V
+Building Z
+Building Z
+Building Z
+Building V
+Building V
+Building W
+Building Z
+Building V
+Building V
+Building Z
+Building V
+Building V
+Building X
+Building U
+Building U
+Building T
+Building V
+Building U
+Building Z
+Building X
+Building Y
+Building Y
+Building Z
+Building U
+Building Z
+Building Y
+Building Z
+Building Y
+Building Z
+Building Y
+Building Z
+Done building Q
+Building Y
+Building Z
+Building Y
+Building Y
+Building Z
+Building Y
+Building Y
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building U
+Building Y
+Building Y
+Building Z
+Building Y
+Building Y
+Building Z
+Building Z
+Building Z
+Building W
+Building X
+Building T
+Building Y
+Building V
+Building V
+Building V
+Building V
+Building V
+Building V
+Building Y
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building R
+Building T
+Building V
+Building X
+Building Z
+Building Z
+Building Z
+Building X
+Building Z
+Building V
+Building Z
+Building V
+Building V
+Building Z
+Building V
+Building Z
+Building Y
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building X
+Building V
+Building R
+Building V
+Building Z
+Building Z
+Building V
+Building Z
+Building S
+Building U
+Building W
+Building Y
+Building Y
+Building Y
+Building Y
+Building Z
+Building Y
+Building F
+Building Z
+Building X
+Building Y
+Building Z
+Building Z
+Building Z
+Done building Z
+Building T
+Building Y
+Building Z
+Building Y
+Building Z
+Building L
+Building J
+Building H
+Building Z
+Building M
+Building Z
+Building K
+Building I
+Building Z
+Building G
+Building Z
+Building Y
+Building Y
+Building Z
+Building Z
+Building Q
+Building Z
+Building Z
+Building Y
+Building Y
+Building Y
+Building H
+Building H
+Building Z
+Building Y
+Building Y
+Building Y
+Done building V
+Building Z
+Building S
+Building V
+Building Z
+Building Z
+Building Z
+Building Z
+Building U
+Building Y
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building V
+Building L
+Building V
+Building Z
+Building Z
+Building V
+Building H
+Building H
+Building K
+Building Z
+Building Z
+Building V
+Building V
+Building V
+Building Z
+Building Z
+Building X
+Building Z
+Building V
+Building Z
+Building W
+Building Z
+Done building V
+Building Z
+Building V
+Building Z
+Building Z
+Building U
+Building Z
+Building V
+Building V
+Building Z
+Building X
+Building Z
+Building Z
+Building U
+Building V
+Building I
+Done building V
+Building Z
+Building part: Q
+Done building Z
+Building Z
+Building V
+Building V
+Building N
+Building P
+Building V
+Building V
+Building V
+Building O
+Building Q
+Building S
+Building R
+Building part: R
+Building T
+Building Y
+Building V
+Building V
+Building V
+Done building Z
+Building V
+Building Y
+Building V
+Done building I
+Done building Z
+Building T
+Building V
+Building Z
+Building Z
+Building V
+Building V
+Building Z
+Building V
+Building V
+Building V
+Building Y
+Building V
+Building V
+Building Z
+Building V
+Building V
+Building Z
+Building V
+Building V
+Building Z
+Building Z
+Building V
+Building X
+Building V
+Building V
+Done building P
+Building T
+Building Z
+Building V
+Building V
+Building X
+Building P
+Done building Z
+Building Z
+Building Y
+Building Y
+Building Y
+Building Y
+Building Z
+Building Y
+Building Y
+Building Y
+Building V
+Building V
+Building Y
+Building Z
+Building V
+Building U
+Done building Z
+Building Z
+Building V
+Building Y
+Building Y
+Building V
+Building V
+Building V
+Done building Z
+Building V
+Building V
+Building Z
+Building Z
+Done building V
+Building Z
+Building Z
+Building V
+Done building Z
+Building Z
+Building Z
+Building Z
+Done building R
+Done building Z
+Building U
+Building Z
+Building V
+Done building Z
+Done building Z
+Building V
+Building Y
+Building W
+Building U
+Building S
+Building Z
+Building Q
+Building N
+Building O
+Building P
+Building Z
+Building R
+Building Z
+Building T
+Building Z
+Building Z
+Building Z
+Building Z
+Building X
+Building Z
+Building Z
+Building Z
+Building Z
+Done building Z
+Building U
+Done building Z
+Building Z
+Building Y
+Building Z
+Building Y
+Building Z
+Building Z
+Building Z
+Building Z
+Building Y
+Building Z
+Building Z
+Building Z
+Building Z
+Building Y
+Building Z
+Building V
+Building Y
+Building Z
+Building Y
+Building Z
+Building Y
+Building W
+Building Z
+Building Q
+Building U
+Building Z
+Building V
+Building V
+Building Z
+Building Z
+Building Z
+Building V
+Building Z
+Building Z
+Building Y
+Building X
+Building V
+Building U
+Building U
+Building Z
+Building Z
+Building W
+Done building U
+Done building V
+Done building V
+Building V
+Building Z
+Building Z
+Building U
+Building U
+Building Z
+Building V
+Building U
+Building V
+Building Z
+Building T
+Building Y
+Building U
+Done building Z
+Building V
+Building Z
+Building V
+Building U
+Building Z
+Building V
+Building Z
+Building Z
+Building V
+Building X
+Building Z
+Building Y
+Building Z
+Building Z
+Building V
+Building Z
+Building Z
+Done building H
+Building U
+Building Z
+Building Y
+Building U
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building U
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building U
+Done building Z
+Building Z
+Building Y
+Building Y
+Building Y
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Done building U
+Done building I
+Building Z
+Building Z
+Building W
+Building Y
+Building Z
+Building Y
+Building Y
+Building Y
+Building Y
+Building V
+Building Z
+Done building V
+Building Y
+Building Y
+Building Y
+Done building Z
+Done building Z
+Building Z
+Done building O
+Done building Z
+Done building Z
+Done building Z
+Building V
+Building part: S
+Building part: T
+Done building Z
+Building part: U
+Building part: V
+Building part: W
+Building V
+Building V
+Building V
+Building V
+Building V
+Building part: X
+Building part: Y
+Building part: Z
+Done building U
+Done building Z
+Building V
+Building Z
+Building Z
+Building Z
+Building Z
+Building U
+Done building Z
+Building S
+Building U
+Building W
+Building Y
+Done building Z
+Building T
+Building V
+Building X
+Building Z
+Done building V
+Done building H
+Building Z
+Building Z
+Done building Z
+Building Z
+Building Z
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building M
+Done building V
+Building U
+Building V
+Building V
+Building Z
+Building V
+Building V
+Building V
+Done building Z
+Building V
+Building Z
+Building Z
+Building Z
+Done building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Done building V
+Done building V
+Building Z
+Building V
+Done building Z
+Building V
+Building V
+Building V
+Building V
+Building V
+Building V
+Done building Z
+Building Z
+Building Z
+Done building Z
+Building Z
+Building Z
+Building U
+Done building V
+Done building Z
+Done building Z
+Building R
+Building U
+Done building H
+Done building V
+Building Z
+Building Y
+Building T
+Building Y
+Done building Z
+Building Y
+Done building Z
+Building Y
+Building Z
+Building Z
+Building Z
+Building V
+Building V
+Done building Z
+Building V
+Building V
+Building V
+Building Z
+Building V
+Done building Z
+Done building V
+Building Z
+Building Z
+Done building Z
+Building Z
+Building Z
+Done building Z
+Building Z
+Done building Z
+Building X
+Done building M
+Building Y
+Done building V
+Building Y
+Building Y
+Building Y
+Done building H
+Building Y
+Building Y
+Building Y
+Building X
+Building Y
+Done building H
+Building W
+Building U
+Done building O
+Done building R
+Done building V
+Building Z
+Done building U
+Building U
+Building Z
+Done building V
+Building V
+Building Z
+Building V
+Building Y
+Building V
+Done building Z
+Done building Z
+Building Y
+Building V
+Building V
+Building Y
+Done building Z
+Building V
+Done building K
+Building Y
+Done building Q
+Done building Z
+Done building Z
+Building W
+Done building Z
+Building Z
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building H
+Building V
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Building Z
+Done building Z
+Building Y
+Building Z
+Done building U
+Building V
+Building V
+Building Z
+Building V
+Done building V
+Done building V
+Done building V
+Building V
+Building V
+Done building Z
+Building V
+Building V
+Done building Z
+Building V
+Done building V
+Building V
+Done building J
+Building X
+Building T
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building U
+Building V
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building V
+Building V
+Building Z
+Done building Z
+Building V
+Building Z
+Building V
+Building V
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building V
+Building Z
+Building V
+Building Z
+Building Z
+Building Z
+Building Z
+Building Y
+Building Y
+Building W
+Building U
+Building Z
+Building V
+Building Z
+Building Z
+Building Z
+Building V
+Building V
+Building V
+Building V
+Building V
+Building V
+Building V
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Done building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Done building Z
+Done building Y
+Building Y
+Building V
+Building V
+Building V
+Building X
+Building Z
+Building Z
+Building V
+Done building Z
+Building Z
+Building Z
+Building Z
+Done building U
+Building U
+Done building U
+Building V
+Done building V
+Building Z
+Done building Z
+Done building Z
+Done building V
+Building Z
+Done building Z
+Building Z
+Building Y
+Done building V
+Done building U
+Done building V
+Building Z
+Building Z
+Done building P
+Building V
+Done building V
+Done building V
+Building V
+Building Z
+Done building U
+Building V
+Done building Z
+Done building Y
+Done building V
+Building V
+Done building V
+Done building Z
+Building V
+Done building Z
+Building Y
+Building Y
+Done building V
+Building Y
+Building Z
+Building Z
+Done building V
+Done building V
+Done building K
+Done building Z
+Done building P
+Building Z
+Done building H
+Building Z
+Done building Z
+Done building V
+Building Z
+Done building Z
+Building Z
+Done building B
+Building Z
+Done building V
+Building Z
+Done building R
+Done building Z
+Done building V
+Done building R
+Building Z
+Done building U
+Building Z
+Done building O
+Done building R
+Done building F
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building U
+Done building U
+Done building Z
+Done building V
+Done building U
+Done building V
+Done building Z
+Building U
+Building Z
+Building Z
+Done building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building V
+Building Z
+Building Z
+Building V
+Building Z
+Building Z
+Building V
+Building V
+Building V
+Building V
+Done building Z
+Building V
+Building V
+Building V
+Building V
+Building V
+Building V
+Done building I
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building U
+Building Z
+Done building V
+Building Y
+Building V
+Building V
+Done building V
+Done building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building V
+Building V
+Building V
+Done building Z
+Building V
+Building V
+Building V
+Building V
+Building Z
+Building V
+Building V
+Building V
+Building U
+Building V
+Building V
+Building U
+Building V
+Building V
+Building V
+Building V
+Building V
+Building V
+Building Z
+Building Z
+Building Y
+Building Y
+Building Y
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building Z
+Building V
+Building Z
+Building Z
+Building V
+Building V
+Building Y
+Done building V
+Done building V
+Done building O
+Building Z
+Building Y
+Done building Z
+Building Y
+Building V
+Building V
+Building Z
+Building Z
+Building V
+Building Z
+Building Z
+Building Z
+Building V
+Done building Z
+Building Z
+Building Z
+Building Y
+Building Y
+Building V
+Building Y
+Building Z
+Done building Z
+Building U
+Done building H
+Building V
+Building Z
+Done building Z
+Building Z
+Building Z
+Done building V
+Building Z
+Building Z
+Done building Z
+Building Z
+Building Z
+Done building H
+Done building Z
+Done building V
+Building Z
+Building Z
+Done building V
+Done building Z
+Done building V
+Building Z
+Done building Z
+Done building V
+Done building V
+Done building U
+Done building U
+Done building Z
+Done building U
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building Q
+Done building Z
+Done building P
+Done building Z
+Done building V
+Done building V
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building U
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building I
+Done building Z
+Done building H
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building R
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building F
+Done building T
+Done building Z
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building O
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building K
+Done building Z
+Done building Z
+Done building V
+Done building U
+Done building U
+Done building I
+Done building V
+Done building Z
+Done building V
+Done building K
+Done building Z
+Done building V
+Done building Z
+Done building U
+Done building V
+Done building Z
+Done building K
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building F
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building F
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building V
+Done building P
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Y
+Done building Y
+Done building T
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Q
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Y
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building H
+Done building V
+Done building Z
+Done building U
+Done building V
+Done building P
+Done building M
+Done building Z
+Done building Y
+Done building U
+Done building V
+Done building V
+Done building Y
+Done building U
+Done building Z
+Done building V
+Done building Z
+Done building U
+Done building V
+Done building H
+Done building U
+Done building T
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building H
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building P
+Done building Z
+Done building H
+Done building Z
+Done building H
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building I
+Done building Q
+Done building V
+Done building U
+Done building V
+Done building V
+Done building Z
+Done building K
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building R
+Done building Z
+Done building H
+Done building Z
+Done building V
+Done building Z
+Done building K
+Done building V
+Done building U
+Done building Z
+Done building V
+Done building V
+Done building U
+Done building H
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building U
+Done building U
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building U
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building Q
+Done building V
+Done building Y
+Done building J
+Done building Z
+Done building U
+Done building V
+Done building Z
+Done building Y
+Done building V
+Done building Z
+Done building Z
+Done building P
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building U
+Done building Z
+Done building Y
+Done building I
+Done building Z
+Done building M
+Done building Z
+Done building V
+Done building O
+Done building Z
+Done building Z
+Done building F
+Done building V
+Done building Z
+Done building Z
+Done building Q
+Done building Z
+Done building V
+Done building F
+Done building V
+Done building Z
+Done building T
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building Y
+Done building B
+Done building Z
+Done building U
+Done building V
+Done building V
+Done building V
+Done building T
+Done building Z
+Done building V
+Done building Z
+Done building Y
+Done building Z
+Done building C
+Done building Z
+Done building U
+Done building O
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Y
+Done building Z
+Done building Z
+Done building K
+Done building Z
+Done building V
+Done building H
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building U
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building U
+Done building V
+Done building O
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building Y
+Done building V
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building O
+Done building C
+Done building V
+Done building T
+Done building V
+Done building V
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Q
+Done building Z
+Done building V
+Done building I
+Done building Z
+Done building Z
+Done building Z
+Done building Y
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building T
+Done building V
+Done building Q
+Done building V
+Done building Z
+Done building Z
+Done building U
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building J
+Done building U
+Done building Z
+Done building Y
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building U
+Done building V
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Y
+Done building Z
+Done building Z
+Done building V
+Done building Y
+Done building Y
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building Y
+Done building Z
+Done building U
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building P
+Done building V
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building Y
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building W
+Done building Y
+Done building V
+Done building T
+Done building Y
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building T
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Y
+Done building Y
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building R
+Done building Z
+Done building Z
+Done building V
+Done building Y
+Done building U
+Done building Z
+Done building V
+Done building Z
+Done building Z
+Done building Z
+Done building Y
+Done building Z
+Done building Z
+Done building Y
+Done building Y
+Done building V
+Done building Z
+Done building Z
+Done building V
+Done building Y
+Done building Z
+Done building Z
+Done building Y
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building V
+Done building Z
+Done building W
+Done building Z
+Done building W
+Done building Y
+Done building Z
+Done building Z
+Done building Z
+Done building Y
+Done building V
+Done building U
+Done building V
+Done building V
+Done building Y
+Done building Z
+Done building Z
+Done building Z
+Done building Y
+Done building Z
+Done building Z
+Done building Y
+Done building Y
+Done building V
+Done building Z
+Done building W
+Done building Y
+Done building T
+Done building V
+Done building V
+Done building Y
+Done building Y
+Done building V
+Done building Z
+Done building Y
+Done building T
+Done building Y
+Done building Z
+Done building Y
+Done building Z
+Done building V
+Done building Z
+Done building V
+Done building Y
+Done building T
+Done building Y
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building Z
+Done building V
+Done building V
+Done building Y
+Done building Y
+Done building W
+Done building Y
+Done building V
+Done building Y
+Done building Y
+Done building Y
+Done building Z
+Done building Y
+Done building V
+Done building Y
+Done building V
+Done building Y
+Done building Z
+Done building Y
+Done building Y
+Done building V
+Done building W
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Z
+Done building V
+Done building Y
+Done building Y
+Done building Z
+Done building V
+Done building Y
+Done building U
+Done building V
+Done building V
+Done building Y
+Done building Y
+Done building Y
+Done building W
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building X
+Done building W
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building X
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building T
+Done building W
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building W
+Done building W
+Done building Y
+Done building Y
+Done building X
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building T
+Done building T
+Done building X
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building N
+Done building Y
+Done building Y
+Done building W
+Done building Y
+Done building X
+Done building Y
+Done building X
+Done building Y
+Done building Y
+Done building X
+Done building T
+Done building Y
+Done building Y
+Done building W
+Done building Y
+Done building Y
+Done building T
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building T
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building Y
+Done building X
+Done building W
+Done building X
+Done building X
+Done building Y
+Done building W
+Done building Y
+Done building W
+Done building Y
+Done building Y
+Done building W
+Done building Y
+Done building X
+Done building W
+Done building Y
+Done building X
+Done building Y
+Done building Y
+Done building X
+Done building X
+Done building X
+Done building S
+Done building X
+Done building S
+Done building X
+Done building X
+Done building X
+Done building N
+Done building X
+Done building L
+Done building S
+Done building X
+Done building X
+Done building X
+Done building N
+Done building X
+Done building X
+Done building N
+Done building S
+Done building S
+Done building N
+Done building X
+Done building N
+Done building N
+Done building S
+Done building X
+Done building N
+Done building L
+Done building S
+Done building L
+Done building N
+Done building L
+Done building L
+Done building S
+Done building G
+Done building G
+Done building S
+Done building L
+Done building E
+Done building L
+Done building L
+Done building G
+Done building G
+Done building E
+Done building D
+Done building E
+Done building D
+Done building A
+DONE!
+
+Result: 
+The program works normally
+

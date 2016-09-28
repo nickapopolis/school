@@ -1,0 +1,5 @@
+print("This is a test of if statements\n");
+x = 4;
+y = 3;
+if(true){print(x);}else{print(y);}
+print("\n");

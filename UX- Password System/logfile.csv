@@ -1,0 +1,56 @@
+4/4/2012 14:56, E-mail ,6674, CREATE , ENTER , null: 3 9 0 0 5 9 7 
+4/4/2012 14:56, E-mail ,6674, CREATE , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, E-mail ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, E-mail ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, E-mail ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, Facebook ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, Facebook ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, Facebook ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, Bank account ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, Bank account ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 14:56, Bank account ,6674, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 15:17, E-mail ,568, LOGIN , ENTER , null: 4 4 -1 3 3 -1 4 
+4/4/2012 15:17, E-mail ,568, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 15:17, E-mail ,568, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 15:17, Facebook ,568, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 15:17, Facebook ,568, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 15:17, Facebook ,568, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 15:17, Bank account ,568, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 15:17, Bank account ,568, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+4/4/2012 15:17, Bank account ,568, LOGIN , ENTER , null: -1 -1 -1 -1 -1 -1 -1 
+START_SESSION , ,,,,
+START , 8 0 5 7 4 8 2 ,,,,
+ENTER , 8 0 5 7 4 8 2 ,,,,
+SUCCESS , ,,,,
+ENTER , -1 -1 -1 -1 -1 -1 -1 ,,,,
+FAILURE , ,,,,
+ENTER , 8 0 5 7 4 8 2 ,,,,
+SUCCESS , ,,,,
+ENTER , 8 0 5 7 4 8 2 ,,,,
+SUCCESS , ,,,,
+END , 8 0 5 7 4 8 2 ,,,,
+START , 3 1 1 6 6 5 2 ,,,,
+ENTER , 3 1 1 6 6 5 2 ,,,,
+SUCCESS , ,,,,
+ENTER , 3 1 1 6 6 5 2 ,,,,
+SUCCESS , ,,,,
+END , 3 1 1 6 6 5 2 ,,,,
+START , 3 8 6 9 7 2 2 ,,,,
+ENTER , 3 8 6 9 7 2 2 ,,,,
+SUCCESS , ,,,,
+ENTER , 3 8 6 9 7 2 2 ,,,,
+SUCCESS , ,,,,
+END , 3 8 6 9 7 2 2 ,,,,
+START , 8 0 5 7 4 8 2 ,,,,
+ENTER , 8 0 5 7 4 8 2 ,,,,
+SUCCESS , ,,,,
+END , 8 0 5 7 4 8 2 ,,,,
+START , 3 1 1 6 6 5 2 ,,,,
+ENTER , 3 1 1 6 6 5 2 ,,,,
+SUCCESS , ,,,,
+END , 3 1 1 6 6 5 2 ,,,,
+START , 3 8 6 9 7 2 2 ,,,,
+ENTER , 3 8 6 9 7 2 2 ,,,,
+SUCCESS , ,,,,
+END , 3 8 6 9 7 2 2 ,,,,
+END_SESSION , ,,,,

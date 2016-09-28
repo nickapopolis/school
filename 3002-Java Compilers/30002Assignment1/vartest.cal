@@ -1,0 +1,13 @@
+print("This is a test of the variables");
+string1 = "This is a string";
+print("\nstring1 = "); print(string1);
+string2 = "This is another string";
+print("\nstring2 = "); print(string2);
+number1 = 1;
+number2 = 1000;
+print("\nnumber1 = "); print(number1);
+print("\nnumber2 = "); print(number2);
+boolean1 = 1 < 2;
+boolean2 = 1 > 2;
+print("\nboolean1 = "); print(boolean1);
+print("\nboolean2 = "); print(boolean2); print("\n");

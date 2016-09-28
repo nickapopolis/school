@@ -1,0 +1,10 @@
+print("This is a test of the strings\n");
+print("You should read this and the next four lines\n");
+print(1);
+print("\n");
+print(2);
+print("\n");
+print(3);
+print("\n");
+print(4);
+print(" - last line, done");
